@@ -13,7 +13,7 @@ suite('Smoke', function() {
 	assert.equal(r.toString(), `From rss@example.com Thu Jan 01 00:00:00 1970
 Content-Type: text/plain
 To: q@example.com
-Message-Id: <adab19b8b6fedead7f6eea7abc390b973d3e42bc.rss2mail@example.com>
+Message-Id: <bf9077ec5cf7c10f715cf8a2e5245445ae5b363a.rss2mail@example.com>
 From: rss2mail <rss@example.com>
 Date: Thu, 01 Jan 1970 00:00:00 GMT
 Subject: no title
@@ -21,12 +21,12 @@ Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
 
-Permalink: null\n\n\n\n\n`)
+Permalink: null\n`)
     })
 
     test('almost-empty.xml rnews', function() {
 	let r = execSync(`${cli} --rnews < ${datadir}/almost-empty.xml|head -1`)
-	assert.equal(r.toString(), "#! rnews 307\n")
+	assert.equal(r.toString(), "#! rnews 303\n")
     })
 
     test('reddit_eli_zaretskii mbox', function() {

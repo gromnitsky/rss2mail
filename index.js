@@ -12,9 +12,10 @@ class MailStream extends Transform {
 	super()
 	this.opts = opts
 	this._writableState.objectMode = true // we can eat objects
+	this.article_count = 0
     }
     _transform(input, encoding, done) {
-	let m = new Mail(feed.article(input), this.opts)
+	let m = new Mail(feed.article(input, ++this.article_count), this.opts)
 	this.push([
 	    this.header(m),
 	    this.opts.rnews ? m.toString() : mbox_escape(m.toString())
@@ -22,7 +23,8 @@ class MailStream extends Transform {
 	done()
     }
     header(mail) {
-	return this.opts.rnews ? `#! rnews ${Buffer.byteLength(mail.toString()) + 1}` : mbox_header(mail)
+	if (this.opts.rnews) return `#! rnews ${Buffer.byteLength(mail.toString()) + 1}`
+	return (this.article_count > 1 ? "\n" : "") + mbox_header(mail)
     }
 }
 module.exports = MailStream
@@ -48,7 +50,7 @@ class Mail {
 	    }).setContent([this.permalink(),
 			   this.article.description,
 			   this.enclosures()].join("\n\n"))
-	    .build().replace(/\r$/mg, '')
+	    .build().replace(/\r$/mg, '').trim()
     }
 
     // INN barks if message-id header is folded
