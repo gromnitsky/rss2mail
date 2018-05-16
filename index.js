@@ -42,7 +42,7 @@ class Mail {
 		'message-id': this.msgid(),
 		'from': this.opts.f || this.article.author || 'rss2mail <rss@example.com>',
 		'date': this.article.pubDate,
-		'subject': this.article.title,
+		'subject': this.article.title || 'no title',
 		'content-disposition': 'inline',
 		'x-rss2mail-categories': this.article.categories.join(", ")
 	    }).setContent([this.permalink(),
