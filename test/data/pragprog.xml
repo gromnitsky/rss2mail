@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:access="http://www.bloglines.com/about/specs/fac-1.0">
+  <access:restriction relationship="deny"/>
+  <channel>
+    <atom:link href="https://pragprog.com/feed/global" rel="self" type="application/rss+xml"/>
+    <title>Pragmatic Bookshelf</title>
+    <link>https://pragprog.com/</link>
+    <description>Up-to-date information about the Pragmatic Bookshelf</description>
+    <language>en-us</language>
+    <pubDate>Mon, 14 May 2018 22:57:52 +0000</pubDate>
+    <item>
+      <title>Getting Clojure: Build Your Functional Skills One Idea at a Time, in print</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Tue, 08 May 2018 12:22:45 +0000</pubDate>
+      <guid>http://pragprog.com/news/getting-clojure-build-your-functional-skills-one-idea-at-a-time-in-print?3880948</guid>
+      <link>http://pragprog.com/news/getting-clojure-build-your-functional-skills-one-idea-at-a-time-in-print</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Modern Vim: Craft Your Development Environment with Vim 8 and Neovim, in print; May PragPub Magazine now available</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Tue, 01 May 2018 21:58:28 +0000</pubDate>
+      <guid>http://pragprog.com/news/modern-vim-craft-your-development-environment-with-vim-8-and-neovim-in-print-may-pragpub-magazine-now-available?3873900</guid>
+      <link>http://pragprog.com/news/modern-vim-craft-your-development-environment-with-vim-8-and-neovim-in-print-may-pragpub-magazine-now-available</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Xcode Treasures: Master the Tools to Design, Build, and Distribute Great Apps in beta</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Tue, 24 Apr 2018 18:59:07 +0000</pubDate>
+      <guid>http://pragprog.com/news/xcode-treasures-master-the-tools-to-design-build-and-distribute-great-apps-in-beta?3867571</guid>
+      <link>http://pragprog.com/news/xcode-treasures-master-the-tools-to-design-build-and-distribute-great-apps-in-beta</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Simplifying JavaScript: Writing Modern JavaScript with ES5, ES6, and Beyond in print</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Wed, 18 Apr 2018 12:42:13 +0000</pubDate>
+      <guid>http://pragprog.com/news/simplifying-javascript-writing-modern-javascript-with-es5-es6-and-beyond-in-print?3862733</guid>
+      <link>http://pragprog.com/news/simplifying-javascript-writing-modern-javascript-with-es5-es6-and-beyond-in-print</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Docker for Rails Developers: Build, Ship, and Run Your Applications Everywhere, in beta</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Tue, 10 Apr 2018 13:22:10 +0000</pubDate>
+      <guid>http://pragprog.com/news/docker-for-rails-developers-build-ship-and-run-your-applications-everywhere-in-beta?3859015</guid>
+      <link>http://pragprog.com/news/docker-for-rails-developers-build-ship-and-run-your-applications-everywhere-in-beta</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Craft GraphQL APIs in Elixir with Absinthe: Flexible, Robust Services for Queries, Mutations, and Subscriptions, in print</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Tue, 27 Mar 2018 18:27:22 +0000</pubDate>
+      <guid>http://pragprog.com/news/craft-graphql-apis-in-elixir-with-absinthe-flexible-robust-services-for-queries-mutations-and-subscriptions-in-print?3852031</guid>
+      <link>http://pragprog.com/news/craft-graphql-apis-in-elixir-with-absinthe-flexible-robust-services-for-queries-mutations-and-subscriptions-in-print</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Adopting Elixir: From Concept to Production, in print</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Tue, 13 Mar 2018 19:40:30 +0000</pubDate>
+      <guid>http://pragprog.com/news/adopting-elixir-from-concept-to-production-in-print?3840754</guid>
+      <link>http://pragprog.com/news/adopting-elixir-from-concept-to-production-in-print</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Programming Clojure, Third Edition, in print; Free iOS course</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Wed, 21 Feb 2018 13:16:30 +0000</pubDate>
+      <guid>http://pragprog.com/news/programming-clojure-third-edition-in-print-free-ios-course?3826826</guid>
+      <link>http://pragprog.com/news/programming-clojure-third-edition-in-print-free-ios-course</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Forge Your Future with Open Source; Domain Modeling Made Functional in print</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Tue, 30 Jan 2018 17:40:36 +0000</pubDate>
+      <guid>http://pragprog.com/news/forge-your-future-with-open-source-domain-modeling-made-functional-in-print?3805589</guid>
+      <link>http://pragprog.com/news/forge-your-future-with-open-source-domain-modeling-made-functional-in-print</link>
+      <category>news</category>
+    </item>
+    <item>
+      <title>Simplifying JavaScript in beta; Complex Network Analysis in Python in print</title>
+      <description>&lt;div id="cms-content"&gt;
+         
+      &lt;/div&gt;
+     </description>
+      <pubDate>Wed, 17 Jan 2018 12:58:36 +0000</pubDate>
+      <guid>http://pragprog.com/news/simplifying-javascript-in-beta-complex-network-analysis-in-python-in-print?3793474</guid>
+      <link>http://pragprog.com/news/simplifying-javascript-in-beta-complex-network-analysis-in-python-in-print</link>
+      <category>news</category>
+    </item>
+  </channel>
+</rss>

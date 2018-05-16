@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:npr="https://www.npr.org/rss/" xmlns:nprml="https://api.npr.org/nprml" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <title>Car Talk</title>
+    <link>http://www.cartalk.com</link>
+    <description><![CDATA[America's funniest auto mechanics take calls from weary car owners all over the country, and crack wise while they diagnose Dodges and dismiss Diahatsus. You don't have to know anything about cars to love this one hour weekly laugh fest.]]></description>
+    <copyright>2001 Dewey, Cheetham and Howe</copyright>
+    <generator>NPR API RSS Generator 0.94</generator>
+    <language>en</language>
+    <itunes:new-feed-url>https://www.npr.org/rss/podcast.php?id=510208</itunes:new-feed-url>
+    <itunes:summary><![CDATA[America's funniest auto mechanics take calls from weary car owners all over the country, and crack wise while they diagnose Dodges and dismiss Diahatsus. You don't have to know anything about cars to love this one hour weekly laugh fest.]]></itunes:summary>
+    <itunes:author>NPR</itunes:author>
+    <itunes:block>no</itunes:block>
+    <itunes:owner>
+      <itunes:email/>
+      <itunes:name/>
+    </itunes:owner>
+    <itunes:category text="Games &amp; Hobbies"/>
+    <itunes:category text="Comedy"/>
+    <itunes:category text="Automotive"/>
+    <itunes:image href="https://media.npr.org/images/podcasts/primary/icon_510208-d265115dff4c0c53bbe2ad8b5201feb26d1fcb03.jpg?s=1400"/>
+    <itunes:type>episodic</itunes:type>
+    <image>
+      <url>https://media.npr.org/images/podcasts/primary/icon_510208-d265115dff4c0c53bbe2ad8b5201feb26d1fcb03.jpg?s=200</url>
+      <title>Car Talk</title>
+      <link>http://www.cartalk.com</link>
+    </image>
+    <lastBuildDate>Sat, 21 Apr 2018 08:00:00 -0400</lastBuildDate>
+    <item>
+      <title>#1816: Imprudent and Unwise</title>
+      <description><![CDATA[This week on The Best of Car Talk, Ray recounts a dark day in Massachusetts history—when the powers that be decided his 16-year-old son was worthy of a driver's license. Elsewhere, it's planting season on Diane's parents' farm and they'd like her husband to remove the BMW with a blown engine residing there. Also, Nirav's Wrangler's horn blared at 5 AM and now won't honk at all. Might the angry neighbor with a sledge hammer and wire cutters be responsible? Ira's Jeep had one leaky injector, but he was told nature required him to replace all six; Tim can't turn his wipers off unelss he bangs on the steering column; and Michelle's husband gave her some bogus advice about not using the parking brake. How bogus? Depends on how likely he is to beat up two puny radio hosts. All this and more, this week on The Best of Car Talk.]]></description>
+      <pubDate>Sat, 21 Apr 2018 08:00:00 -0400</pubDate>
+      <copyright>2001 Dewey, Cheetham and Howe</copyright>
+      <guid>d664c86c-a327-4e57-b4b2-2d9e98d67c95</guid>
+      <itunes:title>#1816: Imprudent and Unwise</itunes:title>
+      <itunes:author>NPR</itunes:author>
+      <itunes:summary>Car Talk April 21, 2018</itunes:summary>
+      <itunes:subtitle>Car Talk April 21, 2018</itunes:subtitle>
+      <itunes:duration>3198</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <content:encoded><![CDATA[This week on The Best of Car Talk, Ray recounts a dark day in Massachusetts history—when the powers that be decided his 16-year-old son was worthy of a driver's license. Elsewhere, it's planting season on Diane's parents' farm and they'd like her husband to remove the BMW with a blown engine residing there. Also, Nirav's Wrangler's horn blared at 5 AM and now won't honk at all. Might the angry neighbor with a sledge hammer and wire cutters be responsible? Ira's Jeep had one leaky injector, but he was told nature required him to replace all six; Tim can't turn his wipers off unelss he bangs on the steering column; and Michelle's husband gave her some bogus advice about not using the parking brake. How bogus? Depends on how likely he is to beat up two puny radio hosts. All this and more, this week on The Best of Car Talk.]]></content:encoded>
+      <enclosure url="https://play.podtrac.com/npr-510208/npr.mc.tritondigital.com/NPR_510208/media/anon.npr-podcasts/podcast/510208/604571154/npr_604571154.mp3?orgId=1&amp;d=3198&amp;p=510208&amp;story=604571154&amp;t=podcast&amp;e=604571154&amp;ft=pod&amp;f=510208" length="25580184" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>#1815: The Four Door Planter</title>
+      <description><![CDATA[This week on The Best of Car Talk, the junkyard refused to haul away Ruth's beloved Dodge Colt. So the big question is, does it have a future as an arboretum or a terrarium? Elsewhere, Alan's relocating from Dallas to Vermont and wants to know if his Bronco needs to be outfitted with anything other than snow tires and Bronko Nagurski long underwear. Also, Nathan learned an expensive lesson about what happens when you tow a boat in 5th gear; Jeff is prepared to strap someone to the hood to help diagnose his Grand Am's "arthritic knee" noise; and on Stump the Chumps, we find out if Dana's Jetta really was suffering from schmutz on the clutch. All this and more, this week on The Best of Car Talk.]]></description>
+      <pubDate>Sat, 14 Apr 2018 08:00:00 -0400</pubDate>
+      <copyright>2001 Dewey, Cheetham and Howe</copyright>
+      <guid>6198eeb1-e5bb-4c28-b3e9-3dc756fa0423</guid>
+      <itunes:title>#1815: The Four Door Planter</itunes:title>
+      <itunes:author>NPR</itunes:author>
+      <itunes:summary>Car Talk April 14, 2018</itunes:summary>
+      <itunes:subtitle>Car Talk April 14, 2018</itunes:subtitle>
+      <itunes:duration>3226</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <content:encoded><![CDATA[This week on The Best of Car Talk, the junkyard refused to haul away Ruth's beloved Dodge Colt. So the big question is, does it have a future as an arboretum or a terrarium? Elsewhere, Alan's relocating from Dallas to Vermont and wants to know if his Bronco needs to be outfitted with anything other than snow tires and Bronko Nagurski long underwear. Also, Nathan learned an expensive lesson about what happens when you tow a boat in 5th gear; Jeff is prepared to strap someone to the hood to help diagnose his Grand Am's "arthritic knee" noise; and on Stump the Chumps, we find out if Dana's Jetta really was suffering from schmutz on the clutch. All this and more, this week on The Best of Car Talk.]]></content:encoded>
+      <enclosure url="https://play.podtrac.com/npr-510208/npr.mc.tritondigital.com/NPR_510208/media/anon.npr-podcasts/podcast/510208/602454391/npr_602454391.mp3?orgId=1&amp;d=3226&amp;p=510208&amp;story=602454391&amp;t=podcast&amp;e=602454391&amp;ft=pod&amp;f=510208" length="25804839" type="audio/mpeg"/>
+    </item>
+  </channel>
+</rss>
