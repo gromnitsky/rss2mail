@@ -15,11 +15,14 @@ class MailStream extends Transform {
     }
     _transform(input, encoding, done) {
 	let m = new Mail(feed.article(input), this.opts)
-	this.push(this.header(m) + m + "\n")
+	this.push([
+	    this.header(m),
+	    this.opts.rnews ? m.toString() : mbox_escape(m.toString())
+	].join("\n") + "\n")
 	done()
     }
     header(mail) {
-	return "-------------\n"
+	return this.opts.rnews ? `#! rnews ${Buffer.byteLength(mail.toString()) + 1}` : mbox_header(mail)
     }
 }
 module.exports = MailStream
@@ -32,11 +35,12 @@ class Mail {
     }
 
     toString() {
-	return new MimeBuilder(this.is_html ? 'text/html' : 'text/plain')
+	return this._toString = this._toString || new MimeBuilder(this.is_html ? 'text/html' : 'text/plain')
 	    .setHeader({
+		'path': os.hostname(),
 		[this.opts.rnews ? 'newsgroups' : 'to']: this.opts._,
 		'message-id': this.msgid(),
-		'from': this.opts.f || this.article.author,
+		'from': this.opts.f || this.article.author || 'rss2mail <rss@example.com>',
 		'date': this.article.pubDate,
 		'subject': this.article.title,
 		'content-disposition': 'inline',
@@ -44,14 +48,15 @@ class Mail {
 	    }).setContent([this.permalink(),
 			   this.article.description,
 			   this.enclosures()].join("\n\n"))
-	    .build()
+	    .build().replace(/\r$/mg, '')
     }
 
-    msgid() { return `${sha1(this.article)}.rss2mail@${os.hostname()}` }
+    // INN barks if message-id header is folded
+    msgid() { return `${sha1(this.article)}.rss2mail@example.com` }
 
     permalink() {
-	let text = `Permalink: ${this.article.link}`
-	return this.is_html ? `<p>${text}</p>` : text
+	let url = this.article.link
+	return this.is_html ? `<p>Permalink: <a href='${url}'>${url}</a></p>` : `Permalink: ${url}`
     }
 
     enclosures() {
@@ -67,6 +72,28 @@ class Mail {
 	let list = this.is_html ? html : txt
 	return [head, list(this.article.enclosures).join("\n")].join("\n\n")
     }
+}
+
+function mbox_escape(s) { return s.replace(/^From .+/mg, '>$&') }
+
+function mbox_header(mail) {
+    let d = mail.article.pubDate
+    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+		  'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    let pad = (str) => ('0'+str).slice(-2)
+    return [
+	'From rss@example.com',
+	days[d.getUTCDay()],
+	months[d.getUTCMonth()],
+	pad(d.getUTCDate()),
+	[
+	    pad(d.getUTCHours()),
+	    pad(d.getUTCMinutes()),
+	    pad(d.getUTCSeconds())
+	].join(':'),
+	d.getUTCFullYear()
+    ].join(' ')
 }
 
 function sha1(obj) {
