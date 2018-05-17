@@ -10,21 +10,25 @@ let gfu = require('grepfeed/lib/u')
 class MailStream extends Transform {
     constructor(opts) {
 	super()
-	this.opts = opts
+	this.opts = opts       // f - from, _ - to (arr), rnews (bool)
 	this._writableState.objectMode = true // we can eat objects
 	this.article_count = 0
+	this.trans = opts.rnews ? this.rnews : this.mbox
     }
     _transform(input, encoding, done) {
 	let m = new Mail(feed.article(input, ++this.article_count), this.opts)
-	this.push([
-	    this.header(m),
-	    this.opts.rnews ? m.toString() : mbox_escape(m.toString())
-	].join("\n") + "\n")
+	this.push(this.trans(m))
 	done()
     }
-    header(mail) {
-	if (this.opts.rnews) return `#! rnews ${Buffer.byteLength(mail.toString()) + 1}`
-	return (this.article_count > 1 ? "\n" : "") + mbox_header(mail)
+    rnews(mail) {
+	mail.mime.setHeader('newsgroups', this.opts._)
+	return [`#! rnews ${Buffer.byteLength(mail.toString()) + 1}`,
+		mail.toString()].join("\n") + "\n"
+    }
+    mbox(mail) {
+	mail.mime.setHeader('to', this.opts._)
+	return [(this.article_count > 1 ? "\n" : "") + mbox_header(mail),
+		mbox_escape(mail.toString())].join("\n") + "\n"
     }
 }
 module.exports = MailStream
@@ -32,15 +36,11 @@ module.exports = MailStream
 class Mail {
     constructor(article, opts) {
 	this.article = article
-	this.opts = opts       // f - from, _ - to (arr), rnews (bool)
+	this.opts = opts
 	this.is_html = is_html(article.description)
-    }
-
-    toString() {
-	return this._toString = this._toString || new MimeBuilder(this.is_html ? 'text/html' : 'text/plain')
+	this.mime = new MimeBuilder(this.is_html ? 'text/html' : 'text/plain')
 	    .setHeader({
 		'path': os.hostname(),
-		[this.opts.rnews ? 'newsgroups' : 'to']: this.opts._,
 		'message-id': this.msgid(),
 		'from': this.opts.f || this.article.author || 'rss2mail <rss@example.com>',
 		'date': this.article.pubDate,
@@ -50,8 +50,9 @@ class Mail {
 	    }).setContent([this.permalink(),
 			   this.article.description,
 			   this.enclosures()].join("\n\n"))
-	    .build().replace(/\r$/mg, '').trim()
     }
+
+    toString() { return this.mime.build().replace(/\r$/mg, '').trim() }
 
     // INN barks if message-id header is folded
     msgid() { return `${sha1(this.article)}.rss2mail@example.com` }
