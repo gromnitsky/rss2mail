@@ -3,6 +3,7 @@
 
 let execSync = require('child_process').execSync
 let assert = require('assert').strict
+let fs = require('fs')
 
 let cli = `${__dirname}/../rss2mail`
 let datadir = `${__dirname}/data`
@@ -32,5 +33,19 @@ Permalink: null\n`)
     test('reddit_eli_zaretskii mbox', function() {
 	let r = execSync(`${cli} < ${datadir}/reddit_eli_zaretskii.xml | grep '^From '| wc -l`)
 	assert.equal(r.toString(), "25\n")
+    })
+
+    test('history', function() {
+	let db = `tmp.${Math.random().toString(36).substring(7)}.txt`
+	let cmd = `${cli} < ${datadir}/cartalk.xml --history ${db} | grep '^From '| wc -l`
+	let r = execSync(cmd)
+	assert.equal(r.toString(), "2\n")
+	execSync(`sed -i'' 1d ${db}`) // delete 1st line in-place
+	r = execSync(cmd)
+	assert.equal(r.toString(), "1\n")
+	r = execSync(cmd)
+	assert.equal(r.toString(), "0\n")
+
+	fs.unlinkSync(db)
     })
 })
