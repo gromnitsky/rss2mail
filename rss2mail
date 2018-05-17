@@ -10,7 +10,7 @@ let MailStream = require('./index')
 
 let argv = minimist(process.argv.slice(2), {
     boolean: ['rnews'],
-    string: ['f']
+    string: ['f', 'history']
 })
 pipeline(process.stdin, new FeedParser(), new MailStream(argv), process.stdout, err => {
     if (err && err.code !== 'EPIPE') {

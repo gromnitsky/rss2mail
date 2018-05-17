@@ -22,6 +22,7 @@
     "dependencies": {
         "emailjs-mime-builder": "~2.0.5",
         "grepfeed": "~1.2.1",
+        "lockfile": "^1.0.4",
         "minimist": "~1.2.0"
     },
     "engines": {

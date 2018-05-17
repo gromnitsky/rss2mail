@@ -1,8 +1,12 @@
 let {Transform} = require('stream')
 let os = require('os')
 let crypto = require('crypto')
+let readline = require('readline')
+let util = require('util')
+let fs = require('fs')
 
 let MimeBuilder = require('emailjs-mime-builder').default
+let lockfile = require('lockfile')
 
 let feed = require('grepfeed/lib/feed')
 let gfu = require('grepfeed/lib/u')
@@ -14,10 +18,15 @@ class MailStream extends Transform {
 	this._writableState.objectMode = true // we can eat objects
 	this.article_count = 0
 	this.trans = opts.rnews ? this.rnews : this.mbox
+	this.history = new History(opts.history)
     }
-    _transform(input, encoding, done) {
+    async _transform(input, encoding, done) {
 	let m = new Mail(feed.article(input, ++this.article_count), this.opts)
-	this.push(this.trans(m))
+	if (!await this.history.exists(m.msgid())) {
+	    this.push(this.trans(m))
+	    await this.history.add(m.msgid())
+	    return done()
+	}
 	done()
     }
     rnews(mail) {
@@ -55,7 +64,7 @@ class Mail {
     toString() { return this.mime.build().replace(/\r$/mg, '').trim() }
 
     // INN barks if message-id header is folded
-    msgid() { return `${sha1(this.article)}.rss2mail@example.com` }
+    msgid() { return this._msgid = this._msgid || `${sha1(this.article)}.rss2mail@example.com` }
 
     permalink() {
 	let url = this.article.link
@@ -74,6 +83,41 @@ class Mail {
 	let txt = e => e.map( enc => `* ${enc}`)
 	let list = this.is_html ? html : txt
 	return [head, list(this.article.enclosures).join("\n")].join("\n\n")
+    }
+}
+
+let fappend = util.promisify(fs.appendFile)
+let flock = util.promisify(lockfile.lock)
+let funlock = util.promisify(lockfile.unlock)
+
+class History {
+    constructor(db) {
+	this.db = db
+	this.lock = db + '.lock'
+    }
+    async add(msgid) {
+	if (!this.db) return
+	await flock(this.lock, {retries: 50}) // 10 in 1s
+	await fappend(this.db, msgid + "\n")
+	return await funlock(this.lock)
+    }
+    exists(msgid) {  // it's 1 line in bash, but all this rubbish in node
+	return new Promise( resolve => {
+	    if (!this.db) { resolve(false); return }
+
+	    let input = fs.createReadStream(this.db)
+	    input.on('error', () => resolve(false))
+
+	    let rl = readline.createInterface({ input })
+	    let found = false
+	    rl.on('close', () => resolve(found))
+	    rl.on('line', line => {
+	    	if (line === msgid) {
+		    found = true
+		    rl.close()
+		}
+	    })
+	})
     }
 }
 
