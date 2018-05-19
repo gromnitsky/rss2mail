@@ -18,6 +18,7 @@
         "rnews"
     ],
     "author": "Alexander Gromnitsky",
+    "repository": "github:gromnitsky/rss2mail",
     "license": "MIT",
     "dependencies": {
         "emailjs-mime-builder": "~2.0.5",

@@ -8,7 +8,7 @@ output.
 * auto deduces output to text/plain or text/html
 * sanitized html
 * no configs, settings, templates, &c
-* < 4KB src
+* < 5KB src
 
 ## Setup
 
@@ -43,6 +43,11 @@ To change `From` header, use
 To post to some `rss.test` newsgroup:
 
     $ curl https://www.joelonsoftware.com/feed/ | rss2mail --rnews rss.test | sudo -u news rnews -N
+
+## See also
+
+[grepfeed](https://github.com/gromnitsky/grepfeed),
+[gmakerss](https://github.com/gromnitsky/gmakerss)
 
 ## License
 
