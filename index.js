@@ -97,7 +97,7 @@ class History {
     }
     async add(msgid) {
 	if (!this.db) return
-	await flock(this.lock, {retries: 50}) // 10 in 1s
+	await flock(this.lock, {wait: 5000})
 	await fappend(this.db, msgid + "\n")
 	return await funlock(this.lock)
     }
