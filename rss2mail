@@ -2,19 +2,23 @@
 'use strict';
 
 let {pipeline} = require('stream')
+let path = require('path')
+let util = require('util')
 
 let FeedParser = require('feedparser')
 let minimist = require('minimist')
 
 let MailStream = require('./index')
 
+let log = util.debuglog('rss2mail')
 let argv = minimist(process.argv.slice(2), {
     boolean: ['rnews'],
     string: ['f', 'history']
 })
 pipeline(process.stdin, new FeedParser(), new MailStream(argv), process.stdout, err => {
     if (err && err.code !== 'EPIPE') {
-	console.error(err)
+	console.error(`${path.basename(process.argv[1])} error:`, err.message)
+	log(err)		// NODE_DEBUG=rss2mail
 	process.exitCode = 1
     }
 })
