@@ -21,7 +21,8 @@ class MailStream extends Transform {
 	this.history = new History(opts.history)
     }
     async _transform(input, encoding, done) {
-	let m = new Mail(feed.article(input, ++this.article_count), this.opts)
+	++this.article_count
+	let m = new Mail(feed.article(input), this.opts)
 	if (!await this.history.exists(m.msgid())) {
 	    this.push(this.trans(m))
 	    await this.history.add(m.msgid())
