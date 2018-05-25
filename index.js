@@ -22,7 +22,8 @@ class MailStream extends Transform {
     }
     async _transform(input, encoding, done) {
 	++this.article_count
-	let m = new Mail(feed.article(input), this.opts)
+	this._meta = this._meta || feed.metadata(input.meta)
+	let m = new Mail(feed.article(input, undefined, this._meta), this.opts)
 	if (!await this.history.exists(m.msgid())) {
 	    this.push(this.trans(m))
 	    await this.history.add(m.msgid())
@@ -52,7 +53,7 @@ class Mail {
 	    .setHeader({
 		'path': os.hostname(),
 		'message-id': this.msgid(),
-		'from': this.opts.f || this.article.author || 'rss2mail <rss@example.com>',
+		'from': this.opts.f || this.article.author,
 		'date': this.article.pubDate,
 		'subject': this.article.title || 'no title',
 		'content-disposition': 'inline',
