@@ -1,4 +1,4 @@
-#!/opt/bin/mocha --ui=tdd
+#!/usr/bin/env -S mocha --ui=tdd
 'use strict';
 
 let execSync = require('child_process').execSync
@@ -13,11 +13,11 @@ suite('Smoke', function() {
 	let r = execSync(`${cli} q@example.com <${datadir}/almost-empty.xml|grep -v '^Path:'`)
 	assert.equal(r.toString(), `From rss@example.com Thu Jan 01 00:00:00 1970
 Content-Type: text/plain
-Message-Id: <e630d9f308f062d8d70e2c27efaacac4d9da2f6d.rss2mail@example.com>
-From: rss@example.com
-Date: Thu, 01 Jan 1970 00:00:00 GMT
-Subject: no title
 Content-Disposition: inline
+From: rss@example.com
+Subject: no title
+Message-ID: <e630d9f308f062d8d70e2c27efaacac4d9da2f6d.rss2mail@example.com>
+Date: Thu, 01 Jan 1970 00:00:00 +0000
 To: q@example.com
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
@@ -27,7 +27,7 @@ Permalink: undefined\n`)
 
     test('almost-empty.xml rnews', function() {
 	let r = execSync(`${cli} --rnews < ${datadir}/almost-empty.xml|head -1`)
-	assert.equal(r.toString(), "#! rnews 297\n")
+	assert.equal(r.toString(), "#! rnews 292\n")
     })
 
     test('reddit_eli_zaretskii mbox', function() {

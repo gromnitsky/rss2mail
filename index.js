@@ -5,7 +5,7 @@ let readline = require('readline')
 let util = require('util')
 let fs = require('fs')
 
-let MimeBuilder = require('emailjs-mime-builder').default
+let MailComposer = require('nodemailer/lib/mail-composer')
 let lockfile = require('lockfile')
 
 let feed = require('grepfeed/lib/feed')
@@ -25,21 +25,22 @@ class MailStream extends Transform {
 	this._meta = this._meta || feed.metadata(input.meta)
 	let m = new Mail(feed.article(input, undefined, this._meta), this.opts)
 	if (!await this.history.exists(m.msgid())) {
-	    this.push(this.trans(m))
+	    this.push(await this.trans(m))
 	    await this.history.add(m.msgid())
 	    return done()
 	}
 	done()
     }
-    rnews(mail) {
-	mail.mime.setHeader('newsgroups', this.opts._)
-	return [`#! rnews ${Buffer.byteLength(mail.toString()) + 1}`,
-		mail.toString()].join("\n") + "\n"
+    async rnews(mail) {
+        // `nodemailer/lib/mime-node` api is unfortunate
+        mail.mime.setHeader('newsgroups', this.opts._.join`,`)
+        let str = await mail.to_s()
+        return [`#! rnews ${Buffer.byteLength(str) + 1}`, str].join("\n") + "\n"
     }
-    mbox(mail) {
+    async mbox(mail) {
 	mail.mime.setHeader('to', this.opts._)
-	return [(this.article_count > 1 ? "\n" : "") + mbox_header(mail),
-		mbox_escape(mail.toString())].join("\n") + "\n"
+        return [(this.article_count > 1 ? "\n" : "") + mbox_header(mail),
+                mbox_escape(await mail.to_s())].join("\n") + "\n"
     }
 }
 module.exports = MailStream
@@ -49,21 +50,25 @@ class Mail {
 	this.article = article
 	this.opts = opts
 	this.is_html = is_html(article.description)
-	this.mime = new MimeBuilder(this.is_html ? 'text/html' : 'text/plain')
-	    .setHeader({
-		'path': os.hostname(),
-		'message-id': this.msgid(),
-		'from': this.opts.f || this.article.author,
-		'date': this.article.pubDate,
-		'subject': this.article.title || 'no title',
-		'content-disposition': 'inline',
-		'x-rss2mail-categories': this.article.categories.join(", ")
-	    }).setContent([this.permalink(),
-			   this.article.description,
-			   this.enclosures()].join("\n\n"))
+        this.mime = new MailComposer({
+            messageId: this.msgid(),
+            from: this.opts.f || this.article.author,
+            date: this.article.pubDate,
+            subject: this.article.title || 'no title',
+            [this.is_html ? 'html' : 'text']: [this.permalink(),
+                                          this.article.description,
+                                          this.enclosures()].join("\n\n"),
+            headers: {
+                'content-disposition': 'inline',
+                'path': os.hostname(),
+                'x-rss2mail-categories': this.article.categories.join(", "),
+            },
+        }).compile()
     }
 
-    toString() { return this.mime.build().replace(/\r$/mg, '').trim() }
+    async to_s() {
+        return (await this.mime.build()).toString().replace(/\r$/mg, '').trim()
+    }
 
     // INN barks if message-id header is folded
     msgid() { return this._msgid = this._msgid || `${sha1(this.article)}.rss2mail@example.com` }
