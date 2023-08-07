@@ -1,35 +1,33 @@
-let {Transform} = require('stream')
-let os = require('os')
-let crypto = require('crypto')
-let readline = require('readline')
-let util = require('util')
-let fs = require('fs')
+import {Transform} from 'stream'
+import os from 'os'
+import crypto from 'crypto'
+import fs from 'fs/promises'
 
-let MailComposer = require('nodemailer/lib/mail-composer')
-let lockfile = require('lockfile')
+import MailComposer from 'nodemailer/lib/mail-composer/index.js'
 
-let feed = require('grepfeed/lib/feed')
-let gfu = require('grepfeed/lib/u')
+import * as feed from 'grepfeed/lib/feed.js'
+import * as gfu from 'grepfeed/lib/u.js'
 
-class MailStream extends Transform {
+export default class MailStream extends Transform {
     constructor(opts) {
 	super()
 	this.opts = opts       // f - from, _ - to (arr), rnews (bool)
 	this._writableState.objectMode = true // we can eat objects
 	this.article_count = 0
 	this.trans = opts.rnews ? this.rnews : this.mbox
-	this.history = new History(opts.history)
+        this.history = opts.history ? new History(opts.history) : null
     }
     async _transform(input, encoding, done) {
 	++this.article_count
 	this._meta = this._meta || feed.metadata(input.meta)
 	let m = new Mail(feed.article(input, undefined, this._meta), this.opts)
-	if (!await this.history.exists(m.msgid())) {
-	    this.push(await this.trans(m))
-	    await this.history.add(m.msgid())
-	    return done()
-	}
-	done()
+        if (this.history) {
+            if (await this.history.add(m.msgid()))
+                this.push(await this.trans(m))
+        } else {
+            this.push(await this.trans(m))
+        }
+        done()
     }
     async rnews(mail) {
         // `nodemailer/lib/mime-node` api is unfortunate
@@ -43,7 +41,6 @@ class MailStream extends Transform {
                 mbox_escape(await mail.to_s())].join("\n") + "\n"
     }
 }
-module.exports = MailStream
 
 class Mail {
     constructor(article, opts) {
@@ -84,7 +81,7 @@ class Mail {
 	let head = 'Enclosures:';
 	if (this.is_html) head = `<hr>\n<p>${head}</p>`
 
-	let html = e => ['<ul>', ...e.map(enc => li(enc.obj)), '</ul>']
+        let html = e => ['<ul>', ...e.map(enc => li(enc)), '</ul>']
 	let li = enc => `<li><a href="${enc.url}">${enc.url}</a> (${enc.type} ${gfu.commas(enc.length)})</li>`
 
 	let txt = e => e.map( enc => `* ${enc}`)
@@ -93,38 +90,23 @@ class Mail {
     }
 }
 
-let fappend = util.promisify(fs.appendFile)
-let flock = util.promisify(lockfile.lock)
-let funlock = util.promisify(lockfile.unlock)
-
 class History {
-    constructor(db) {
-	this.db = db
-	this.lock = db + '.lock'
+    constructor(filename) {
+        this.fd = fs.open(filename, "a+")
+        this.fda = fs.open(filename, "a")
     }
     async add(msgid) {
-	if (!this.db) return
-	await flock(this.lock, {wait: 5000})
-	await fappend(this.db, msgid + "\n")
-	return await funlock(this.lock)
+        let fda = await this.fda
+        if (!await this.exists(msgid)) {
+            fda.writeFile(msgid + "\n")
+            return true
+        }
     }
-    exists(msgid) {  // it's 1 line in bash, but all this rubbish in node
-	return new Promise( resolve => {
-	    if (!this.db) { resolve(false); return }
-
-	    let input = fs.createReadStream(this.db)
-	    input.on('error', () => resolve(false))
-
-	    let rl = readline.createInterface({ input })
-	    let found = false
-	    rl.on('close', () => resolve(found))
-	    rl.on('line', line => {
-	    	if (line === msgid) {
-		    found = true
-		    rl.close()
-		}
-	    })
-	})
+    async exists(msgid) {
+        let fd = await this.fd
+        for await (const line of fd.readLines({autoClose: false, start: 0})) {
+            if (line === msgid) return true
+        }
     }
 }
 

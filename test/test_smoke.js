@@ -1,22 +1,24 @@
 #!/usr/bin/env -S mocha --ui=tdd
-'use strict';
 
-let execSync = require('child_process').execSync
-let assert = require('assert').strict
-let fs = require('fs')
+import {execSync} from 'child_process'
+import { strict as assert } from 'assert'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-let cli = `${__dirname}/../rss2mail`
+let __dirname = path.dirname(fileURLToPath(import.meta.url))
+let cli = `${__dirname}/../rss2mail.js`
 let datadir = `${__dirname}/data`
 
 suite('Smoke', function() {
     test('almost-empty.xml mbox', function() {
 	let r = execSync(`${cli} q@example.com <${datadir}/almost-empty.xml|grep -v '^Path:'`)
 	assert.equal(r.toString(), `From rss@example.com Thu Jan 01 00:00:00 1970
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 From: rss@example.com
 Subject: no title
-Message-ID: <e630d9f308f062d8d70e2c27efaacac4d9da2f6d.rss2mail@example.com>
+Message-ID: <df7b466f2490f77a5c523c25c9a9b178ff278824.rss2mail@example.com>
 Date: Thu, 01 Jan 1970 00:00:00 +0000
 To: q@example.com
 Content-Transfer-Encoding: 7bit
@@ -27,7 +29,7 @@ Permalink: undefined\n`)
 
     test('almost-empty.xml rnews', function() {
 	let r = execSync(`${cli} --rnews < ${datadir}/almost-empty.xml|head -1`)
-	assert.equal(r.toString(), "#! rnews 292\n")
+	assert.equal(r.toString(), "#! rnews 305\n")
     })
 
     test('reddit_eli_zaretskii mbox', function() {

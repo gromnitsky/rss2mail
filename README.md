@@ -12,20 +12,20 @@ output.
 
 ## Setup
 
-node 10.x
+node 18.x
 
-    # npm i -g rss2mail
+    $ npm i -g rss2mail
 
 ## Usage
 
 Read Spolsky's musings in mutt:
 
 ~~~
-$ curl https://www.joelonsoftware.com/feed/ | rss2mail > 1.mbox
+$ curl https://www.joelonsoftware.com/feed/ | rss2mail.js > 1.mbox
 $ mutt -f 1.mbox
 ~~~
 
-![mutt](https://ultraimg.com/images/2018/05/17/MvxO.png)
+![](screenshot.png)
 
 This will create html emails! You have no control around this--if
 rss2mail detects plain text in feed articles then it produces
@@ -34,20 +34,26 @@ text/plain output.
 To convert & send, install procmail pkg that contains
 [formail](https://linux.die.net/man/1/formail) util:
 
-    $ curl https://www.joelonsoftware.com/feed/ | rss2mail bob@example.com alice@example.net | formail -s sendmail -it
+    $ curl https://www.joelonsoftware.com/feed/ | rss2mail.js bob@example.com alice@example.net | formail -s sendmail -it
 
 To change `From` header, use
 
-    $ curl ... | rss2mail -f me@example.com
+    $ curl ... | rss2mail.js -f me@example.com
 
 To post to some `rss.test` newsgroup:
 
-    $ curl https://www.joelonsoftware.com/feed/ | rss2mail --rnews rss.test | sudo -u news rnews -N
+    $ curl https://www.joelonsoftware.com/feed/ | rss2mail.js --rnews rss.test | sudo -u news rnews -N
 
 ## See also
 
 [grepfeed](https://github.com/gromnitsky/grepfeed),
 [gmakerss](https://github.com/gromnitsky/gmakerss)
+
+## News
+
+* 1.0.0
+
+    * updated to es6 modules, the main executable is `rss2mail.js` now.
 
 ## License
 

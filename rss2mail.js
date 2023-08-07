@@ -1,19 +1,16 @@
 #!/usr/bin/env node
-'use strict';
 
-let {pipeline} = require('stream')
-let path = require('path')
-let util = require('util')
-let fs = require('fs')
+import {pipeline} from 'stream'
+import util from 'util'
+import fs from 'fs'
 
-let FeedParser = require('feedparser')
-let minimist = require('minimist')
-let lockfile = require('lockfile')
+import FeedParser from 'feedparser'
+import minimist from 'minimist'
 
-let MailStream = require('./index')
+import MailStream from './index.js'
 
 let errx = function(is_exit, e) {
-    console.error(`${path.basename(process.argv[1])} error:`, e.message)
+    console.error('rss2mail error:', e.message)
     if (is_exit) process.exit(1)
 }
 let log = util.debuglog('rss2mail')
@@ -35,17 +32,6 @@ if (argv.o) {
     pipe.on('data', chunk => {
 	let out = fs.createWriteStream(argv.o, {flags: 'a'})
 	out.on('error', err => errx(1, err))
-	out.cork()
-	out.write(chunk)	// to memory
-
-	let lock = argv.o + '.lock'
-	lockfile.lock(lock, {wait: 5000}, err => { // do we really need locking?
-	    if (err) errx(1, err)
-	    out.uncork()	// puts!
-	    lockfile.unlock(lock, err => {
-		if (err) errx(1, err)
-		out.end()	// flush, close
-	    })
-	})
+	out.write(chunk)
     })
 }
