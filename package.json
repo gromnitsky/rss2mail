@@ -22,7 +22,6 @@
     "license": "MIT",
     "dependencies": {
         "grepfeed": "~2.0.0",
-        "minimist": "~1.2.0",
         "nodemailer": "~6.9.4"
     }
 }

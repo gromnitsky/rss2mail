@@ -9,13 +9,14 @@ import * as feed from 'grepfeed/lib/feed.js'
 import * as gfu from 'grepfeed/lib/u.js'
 
 export default class MailStream extends Transform {
-    constructor(opts) {
+    constructor(opts /* util.parseArgs */) {
 	super()
-	this.opts = opts       // f - from, _ - to (arr), rnews (bool)
+        // values.f - from, values.rnews (bool), positionals - to (arr)
+        this.opts = opts
 	this._writableState.objectMode = true // we can eat objects
 	this.article_count = 0
-	this.trans = opts.rnews ? this.rnews : this.mbox
-        this.history = opts.history ? new History(opts.history) : null
+        this.trans = opts.values.rnews ? this.rnews : this.mbox
+        this.history = opts.values.history ? new History(opts.values.history) : null
     }
     async _transform(input, encoding, done) {
 	++this.article_count
@@ -31,25 +32,24 @@ export default class MailStream extends Transform {
     }
     async rnews(mail) {
         // `nodemailer/lib/mime-node` api is unfortunate
-        mail.mime.setHeader('newsgroups', this.opts._.join`,`)
+        mail.mime.setHeader('newsgroups', this.opts.positionals.join`,`)
         let str = await mail.to_s()
         return [`#! rnews ${Buffer.byteLength(str) + 1}`, str].join("\n") + "\n"
     }
     async mbox(mail) {
-	mail.mime.setHeader('to', this.opts._)
+        mail.mime.setHeader('to', this.opts.positionals)
         return [(this.article_count > 1 ? "\n" : "") + mbox_header(mail),
                 mbox_escape(await mail.to_s())].join("\n") + "\n"
     }
 }
 
 class Mail {
-    constructor(article, opts) {
+    constructor(article, opts /* util.parseArgs */) {
 	this.article = article
-	this.opts = opts
 	this.is_html = is_html(article.description)
         this.mime = new MailComposer({
             messageId: this.msgid(),
-            from: this.opts.f || this.article.author,
+            from: opts.values.f || this.article.author,
             date: this.article.pubDate,
             subject: this.article.title || 'no title',
             [this.is_html ? 'html' : 'text']: [this.permalink(),

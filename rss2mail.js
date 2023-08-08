@@ -3,10 +3,7 @@
 import {pipeline} from 'stream'
 import util from 'util'
 import fs from 'fs'
-
 import FeedParser from 'feedparser'
-import minimist from 'minimist'
-
 import MailStream from './index.js'
 
 let errx = function(is_exit, e) {
@@ -14,12 +11,19 @@ let errx = function(is_exit, e) {
     if (is_exit) process.exit(1)
 }
 let log = util.debuglog('rss2mail')
-let argv = minimist(process.argv.slice(2), {
-    boolean: ['rnews'],
-    string: ['f', 'history', 'o']
-})
-let streams = [process.stdin, new FeedParser(), new MailStream(argv)]
-if (!argv.o) streams.push(process.stdout)
+
+let args
+try {
+    args = util.parseArgs({allowPositionals: true, options: {
+        rnews: { type: 'boolean' },
+        history: { type: 'string' }, f: { type: 'string' },
+        o: { type: 'string' },
+    }})
+} catch (err) {
+    errx(1, err)
+}
+let streams = [process.stdin, new FeedParser(), new MailStream(args)]
+if (!args.values.o) streams.push(process.stdout)
 let pipe = pipeline(...streams, err => {
     if (err && err.code !== 'EPIPE') {
 	errx(false, err)
@@ -28,10 +32,11 @@ let pipe = pipeline(...streams, err => {
     }
 })
 
-if (argv.o) {
+if (args.values.o) {
     pipe.on('data', chunk => {
-	let out = fs.createWriteStream(argv.o, {flags: 'a'})
-	out.on('error', err => errx(1, err))
-	out.write(chunk)
+        let out = fs.createWriteStream(args.values.o, {flags: 'a'})
+        out.on('error', err => errx(1, err))
+        out.write(chunk)
+        out.end()
     })
 }
