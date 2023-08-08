@@ -3,10 +3,11 @@
     "version": "1.0.0",
     "description": "Convert an rss/atom feed to a bunch of emails in mbox/rnews compatible output; it does NOT send the emails",
     "type": "module",
-    "bin": "rss2mail",
+    "bin": "rss2mail.js",
     "files": [
         "index.js",
-        "rss2mail.js"
+        "rss2mail.js",
+        "usage.txt"
     ],
     "keywords": [
         "atom",
