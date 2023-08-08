@@ -21,7 +21,7 @@ Nodejs 18.x
 Read Spolsky's musings in mutt:
 
 ~~~
-$ curl https://www.joelonsoftware.com/feed/ | rss2mail.js > 1.mbox
+$ curl https://www.joelonsoftware.com/feed/ | rss2mail > 1.mbox
 $ mutt -f 1.mbox
 ~~~
 
@@ -33,15 +33,15 @@ text/plain output.
 
 To convert & send, install procmail pkg that contains [formail][] util:
 
-    $ curl https://www.joelonsoftware.com/feed/ | rss2mail.js bob@example.com alice@example.net | formail -s sendmail -ti
+    $ curl https://www.joelonsoftware.com/feed/ | rss2mail bob@example.com alice@example.net | formail -s sendmail -ti
 
 To change `From` header, use
 
-    $ curl ... | rss2mail.js -f me@example.com
+    $ curl ... | rss2mail -f me@example.com
 
 To post to some `rss.test` newsgroup:
 
-    $ curl https://www.joelonsoftware.com/feed/ | rss2mail.js --rnews rss.test | sudo -u news rnews -N
+    $ curl https://www.joelonsoftware.com/feed/ | rss2mail --rnews rss.test | sudo -u news rnews -N
 
 ## See also
 
@@ -52,8 +52,6 @@ To post to some `rss.test` newsgroup:
 
 * 1.0.0 breaking changes:
 
-    * the main executable is `rss2mail.js` (the node's es6 modules
-      limitation);
     * `message-id` is generated differently.
 
 ## License
