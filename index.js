@@ -68,7 +68,12 @@ class Mail {
     }
 
     // INN barks if message-id header is folded
-    msgid() { return this._msgid = this._msgid || `${sha1(this.article)}.rss2mail@example.com` }
+    msgid() {
+        let guid = this.article.guid || JSON.stringify(this.article)
+        let prefix = this.article.guid ? 'guid' : 'article'
+        let h = crypto.createHash('sha1').update(guid).digest('hex').slice(0,24)
+        return [prefix, h, 'rss2mail@example.com'].join`.`
+    }
 
     permalink() {
 	let url = this.article.link
@@ -130,10 +135,6 @@ function mbox_header(mail) {
 	].join(':'),
 	d.getUTCFullYear()
     ].join(' ')
-}
-
-function sha1(obj) {
-    return crypto.createHash('sha1').update(JSON.stringify(obj)).digest('hex')
 }
 
 // FIXME: use parse5 to strip non-text nodes, then return s === strip(s)

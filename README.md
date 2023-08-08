@@ -8,11 +8,11 @@ output.
 * auto deduces output to text/plain or text/html
 * sanitized html
 * no configs, settings, templates, &c
-* < 5KB src
+* smol
 
 ## Setup
 
-node 18.x
+Nodejs 18.x
 
     $ npm i -g rss2mail
 
@@ -31,10 +31,9 @@ This will create html emails! You have no control around this--if
 rss2mail detects plain text in feed articles then it produces
 text/plain output.
 
-To convert & send, install procmail pkg that contains
-[formail](https://linux.die.net/man/1/formail) util:
+To convert & send, install procmail pkg that contains [formail][] util:
 
-    $ curl https://www.joelonsoftware.com/feed/ | rss2mail.js bob@example.com alice@example.net | formail -s sendmail -it
+    $ curl https://www.joelonsoftware.com/feed/ | rss2mail.js bob@example.com alice@example.net | formail -s sendmail -ti
 
 To change `From` header, use
 
@@ -51,10 +50,14 @@ To post to some `rss.test` newsgroup:
 
 ## News
 
-* 1.0.0
+* 1.0.0 breaking changes:
 
-    * updated to es6 modules, the main executable is `rss2mail.js` now.
+    * the main executable is `rss2mail.js` (the node's es6 modules
+      limitation);
+    * `message-id` is generated differently.
 
 ## License
 
 MIT
+
+[formail]: https://manpages.debian.org/unstable/procmail/formail.1.en.html
