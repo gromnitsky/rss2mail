@@ -4,6 +4,7 @@ import {pipeline} from 'stream'
 import util from 'util'
 import fs from 'fs'
 import FeedParser from 'feedparser'
+import lockfile from 'lockfile'
 import MailStream from './index.js'
 
 let errx = function(is_exit, e) {
@@ -36,7 +37,18 @@ if (args.values.o) {
     pipe.on('data', chunk => {
         let out = fs.createWriteStream(args.values.o, {flags: 'a'})
         out.on('error', err => errx(1, err))
-        out.write(chunk)
-        out.end()
+	out.cork()
+	out.write(chunk)	// to memory
+
+        // we need locking for `chunk` may be > PIPE_BUF (4K on Linux)
+        let lock = args.values.o + '.lock'
+        lockfile.lock(lock, {wait: 5000}, err => {
+	    if (err) errx(1, err)
+	    out.uncork()	// puts!
+	    lockfile.unlock(lock, err => {
+		if (err) errx(1, err)
+		out.end()	// flush, close
+	    })
+	})
     })
 }
