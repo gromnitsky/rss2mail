@@ -97,7 +97,7 @@ class Mail {
 
 class History {
     constructor(filename) {
-        this.fd = fs.open(filename, "a+")
+        this.filename = filename
         this.fda = fs.open(filename, "a")
     }
     async add(msgid) {
@@ -108,10 +108,16 @@ class History {
         }
     }
     async exists(msgid) {
-        let fd = await this.fd
-        for await (const line of fd.readLines({autoClose: false, start: 0})) {
-            if (line === msgid) return true
+        let fd = await fs.open(this.filename, "a+")
+        let found = false
+        for await (const line of fd.readLines()) {
+            if (line === msgid) {
+                found = true
+                break
+            }
         }
+        await fd.close()
+        return found
     }
 }
 
