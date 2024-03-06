@@ -1,0 +1,290 @@
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hacker News: textmode threads</title><link>https://news.ycombinator.com/threads?id=textmode</link><description>Hacker News RSS</description><docs>https://hnrss.org/</docs><generator>hnrss v2.1.1</generator><lastBuildDate>Wed, 06 Mar 2024 11:45:03 +0000</lastBuildDate><atom:link href="https://hnrss.org/threads?id=textmode" rel="self" type="application/rss+xml"></atom:link><item><title><![CDATA[New comment by textmode in "Remove HTTP headers from gzip or zip on stdin yy054 (revised)"]]></title><description><![CDATA[
+<p>Correction:<p><pre><code>      /* remove HTTP headers from multiple gzip or single zip from stdin */
+    
+     int fileno (FILE *);
+     int setenv (const char *, const char *, int);
+     #define jmp (yy_start) = 1 + 2 *
+     int x;
+    %option nounput noinput noyywrap
+    %%
+    HTTP\/[\40-\176]+\x0d\x0a x++;
+    [\40-\176]+:[\40-\176]+\r\n if(!x)fwrite(yytext,1,yyleng,yyout);
+    \x0D\x0A if(!x)fwrite(yytext,1,yyleng,yyout);x=0;
+    %%
+    int main()
+    { 
+    yylex();
+    exit(0);
+    }
+
+</code></pre>
+Usage example:<p>Retrieve hostnames, IP addresses and (if available) sitemap URLs from latest Common Crawl.<p><pre><code>     ftp -4 https://data.commoncrawl.org/crawl-data/CC-MAIN-2023-50/robotstxt.paths.gz # <-- 180K
+     gzip -dc robotstxt.paths.gz \
+     |head -5 \
+     |sed 's>.*>GET /& HTTP/1.1[]Host: data.commoncrawl.org[]Connection: >;
+           $!s/$/keep-alive[]/;$s/$/close[]/' \
+     |tr [] '\r\n' \
+     |openssl s_client -quiet -connect data.commoncrawl.org:443 \
+     |yy054 \
+     |zegrep -a '(^Sitemap:)|(^Host:)|(^WARC-Target-URI:)|(^WARC-IP-Address:)' > 1.txt
+     exec cat 1.txt</code></pre></p>
+]]></description><pubDate>Thu, 28 Dec 2023 21:37:30 +0000</pubDate><link>https://news.ycombinator.com/item?id=38798997</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=38798997</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=38798997</guid></item><item><title><![CDATA[New comment by textmode in "Remove HTTP headers from gzip or zip on stdin yy054 (revised)"]]></title><description><![CDATA[
+<p>Usage example:<p>Download NetBSD 1.0 in a single TCP connection.<p><pre><code>    y="GET /pub/NetBSD-archive/NetBSD-1.0/source/src10/"
+    z="Host: archive.netbsd.org"
+    sed '$!s>.*>'"$y"'& HTTP/1.1[]'"$z"'[]Connection: keep-alive[]>;
+         $s>.*>'"$y"'& HTTP/1.0[]'"$z"'[]>' << eof \
+    |tr '[]' '\r\n' \
+    |openssl s_client -quiet -connect 151.101.129.6:443 -servername archive.netbsd.org > http+gzip
+    src10.aa
+    src10.ab
+    src10.ac
+    src10.ad
+    src10.ae
+    src10.af
+    src10.ag
+    src10.ah
+    src10.ai
+    src10.aj
+    src10.ak
+    src10.al
+    src10.am
+    src10.an
+    src10.ao
+    src10.ap
+    src10.aq
+    src10.ar
+    src10.as
+    src10.at
+    src10.au
+    src10.av
+    src10.aw
+    src10.ax
+    src10.ay
+    src10.az
+    src10.ba
+    src10.bb
+    src10.bc
+    src10.bd
+    src10.be
+    src10.bf
+    eof
+
+    yy054 < http+gzip|tar tvzf /dev/stdin
+</code></pre>
+Alternate usage:<p>Include an argv[1] will print HTTP headers only<p><pre><code>    yy054 print < http+gzip
+    yy054 x < http+gzip</code></pre></p>
+]]></description><pubDate>Wed, 27 Dec 2023 01:09:36 +0000</pubDate><link>https://news.ycombinator.com/item?id=38777921</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=38777921</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=38777921</guid></item><item><title><![CDATA[New comment by textmode in "Extract URLs Relative and/or Absolute yy044"]]></title><description><![CDATA[
+<p>Normally I use yy030 but I have been experimenting with this instead.<p>Seems to be slightly faster and smaller than similar programs from html-xml-utils.<p><a href="https://www.w3.org/Tools/HTML-XML-utils/man1/" rel="nofollow noreferrer">https://www.w3.org/Tools/HTML-XML-utils/man1/</a><p>Compile:<p><pre><code>   links -no-connect -dump https://news.ycombinator.com/item?id=38727772 \
+   |sed '1,4d;77,$d;s/[ ]\{6\}//' \
+   |flex -8Cem;cc -O3 -std=c89 -W -Wall -pipe lex.yy.c -static -o yy044
+   strip -s yy044
+</code></pre>
+Example usage:<p><pre><code>      # NB. not a real cookie
+      curl -H "cookie=user=santa&K7RGzmUtAoKv9OIRMfQ9bfwYpiDEuypp" -siA "" \
+      https://news.ycombinator.com \
+      |host=news.ycombinator.com/ yy044 r \
+      |sed -n 's/&amp;/\&/g;/vote/p'</code></pre></p>
+]]></description><pubDate>Thu, 21 Dec 2023 22:20:23 +0000</pubDate><link>https://news.ycombinator.com/item?id=38727891</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=38727891</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=38727891</guid></item><item><title><![CDATA[New comment by textmode in "Chunked-transfer decoding from stdin yy045"]]></title><description><![CDATA[
+<p><p><pre><code>   /* chunked transfer decoding */
+   
+    #define echo do{if(fwrite(yytext,(size_t)yyleng,1,yyout)){}}while(0)
+    #define jmp (yy_start) = 1 + 2 *
+    int fileno (FILE *);
+    int ischunked,chunksize,count;
+   xa "\15"|"\12"
+   xb "\15\12" 
+   xc "HTTP/0.9"|"HTTP/1.0"|"HTTP/1.1"
+   xd [Cc][Hh][Uu][Nn][Kk][Ee][Dd]
+   xe [0-9a-fA-F]+\r\n
+   xf [0-9a-fA-F]*\r\n
+   %option noyywrap nounput noinput 
+   %s xb xc xd xe xf
+   %%
+   ^{xc} echo;ischunked=0;jmp xc;
+   <xc>^transfer-encoding: echo;jmp xb;
+   <xb>\r\n\r\n echo;jmp xe;
+   <xb>{xd} echo;ischunked=1;
+   <xe>{xf}|{xe} {
+   count=0;
+   if(ischunked==1)
+   {chunksize=strtol(yytext,NULL,16);
+   jmp xd;};
+   };
+   <xd>{xb} jmp xf;
+   <xd>. { 
+   count++;
+   if(count==chunksize)jmp xe;
+   echo;
+   };
+   <xf>^[A-Fa-f0-9]+{xa}
+   <xf>{xa}+[A-Fa-f0-9]+{xa}
+   <xf>{xb}[A-Fa-f0-9]+{xb}
+   %%
+   int main(){ yylex();exit(0);}</code></pre></p>
+]]></description><pubDate>Sun, 02 Oct 2022 10:15:28 +0000</pubDate><link>https://news.ycombinator.com/item?id=33054610</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=33054610</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=33054610</guid></item><item><title><![CDATA[New comment by textmode in "A call to minimize distraction and respect users’ attention (2013)"]]></title><description><![CDATA[
+<p>Below is a short script that downloads and makes a PDF from the image files.  No browser required.<p>The script uses a feature of HTTP/1.1 called pipelining; proponents of HTTP/2 and HTTP/3 want people to believe it has problems because it does not fit their commercialised web business model.
+As demonstrated by the script below, it has no problems.
+It's a feature that simply does not suit the online ad industry-funded business model with its gigantic corporate browser, bloated conglomeration web pages and incessant data collection.
+Here, only 2 TCP connections are used to retrieve 141 images.  
+Most servers are less restrictive and allow more than 100 requests per TCP connection.
+Pipelining works great.  Much more efficient than browsers which open hundreds of connections.
+IMHO.<p><pre><code>    (export Connection=keep-alive
+    x1=http://www.minimizedistraction.com/img/vrg_google_doc_final_vrs03-
+    x2(){ seq -f "$x1%g.jpg" $1 $2;};
+    x3(){ yy025|nc -vvn 173.236.175.199 80;};
+    x2   1 100|x3;
+    x2 101 200|x3;
+    )|exec yy056|exec od -An -tx1 -vw99999|exec tr -d '\40'|exec sed 's/ffd9ffd8/ffd9\
+    ffd8/g'|exec sed -n /ffd8/p|exec split -l1;
+    for x in x??;do xxd -p -r < $x > $x.jpg;rm $x;done;
+    convert x??.jpg 1.pdf 2>/dev/null;rm x??.jpg
+
+    ls -l ./1.pdf
+</code></pre>
+More details on yy025 and yy056 here:
+<a href="https://news.ycombinator.com/item?id=27769701" rel="nofollow">https://news.ycombinator.com/item?id=27769701</a></p>
+]]></description><pubDate>Thu, 08 Jul 2021 09:27:42 +0000</pubDate><link>https://news.ycombinator.com/item?id=27769832</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27769832</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27769832</guid></item><item><title><![CDATA[New comment by textmode in "Althttpd: Simple webserver in a single C file"]]></title><description><![CDATA[
+<p><a href="https://news.ycombinator.com/item?id=27490265" rel="nofollow">https://news.ycombinator.com/item?id=27490265</a> <-- yy054<p>The "gibberish" is GZIP compressed data.  "yy054" is a simple filter I wrote to extract a GZIP file from stdin, i.e., discard leading and trailing garabage.  As far as I can tell, the compressed file "ee.txt" is not chunked transfer encoded. If it was chunked we would first extract the GZIP, then decompress and finally process the chunks (e.g., filter out the chunk sizes with the filter submitted in the OP).<p>In this case all we need to do is extract the GZIP file "ee.txt" from stdin, then decompress it:<p><pre><code>    printf "GET /ee.txt\r\nHost: stuff-storage.sfo3.digitaloceanspaces.com\r\nConnection: close\r\n\r\n"|openssl s_client -connect 138.68.34.161:443 -quiet|yy054|gzip -dc > 1.htm
+    firefox ./1.htm
+   </code></pre>
+Hope this helps.  Apologies I initially guessed wrong on here doc. I was not sure what was meant by "gibberish".  Looks like the here doc is working fine.</p>
+]]></description><pubDate>Sun, 13 Jun 2021 06:55:26 +0000</pubDate><link>https://news.ycombinator.com/item?id=27490395</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27490395</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27490395</guid></item><item><title><![CDATA[New comment by textmode in "Althttpd: Simple webserver in a single C file"]]></title><description><![CDATA[
+<p>Need to get rid of the leading spaces on all lines except the  "int fileno" line.  Can also forgo the "here doc" and just save the lines between "flex" and "eof" to a file.  Run flex on that file.  This will create lex.yy.c.  Then compile lex.yy.c.<p>The compiled program is only useful for filtering chunked transfer encoding on stdin.  Most "HTTP clients" like wget or curl already take care of processing chunked transfer encoding.  It is when working with something like netcat that chunked tranfser encoding becomes "DIY".  This is a simple program that attempts to solve that problem.  It could be written by hand without using flex.</p>
+]]></description><pubDate>Sat, 12 Jun 2021 10:40:43 +0000</pubDate><link>https://news.ycombinator.com/item?id=27483448</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27483448</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27483448</guid></item><item><title><![CDATA[New comment by textmode in "Althttpd: Simple webserver in a single C file"]]></title><description><![CDATA[
+<p>The extra "a" is a typo but would have no effect.  The "i" is also superfluous but harmless.  Without more details on the "gibberish" it is difficult to guess what happened.  The space before "int fileno (FILE *);" is required. All the other lines must be left-justified, no leading spaces, except the line with "int main()" which can be indented if desired.</p>
+]]></description><pubDate>Wed, 09 Jun 2021 15:41:02 +0000</pubDate><link>https://news.ycombinator.com/item?id=27449208</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27449208</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27449208</guid></item><item><title><![CDATA[New comment by textmode in "Althttpd: Simple webserver in a single C file"]]></title><description><![CDATA[
+<p>I make most HTTP requests using netcat or similar tcp clients so I write filters that read from stdin.  Reading text files with the chunk sizes in hex interspersed is generally easy.  Sometimes I do not even bother to remove the chunk sizes. Where it becomes an issue is when it breaks URLs.  Here is a simple chunked transfer decoder that reads from stdin and removes the chunk sizes.<p><pre><code>   flex -8iCrfa <<eof
+    int fileno (FILE *);
+   xa "\15"|"\12"
+   xb "\15\12" 
+   %option noyywrap nounput noinput 
+   %%
+   ^[A-Fa-f0-9]+{xa}
+   {xa}+[A-Fa-f0-9]+{xa}
+   {xb}[A-Fa-f0-9]+{xb} 
+   %%
+   int main(){ yylex();exit(0);}
+   eof
+
+   cc -std=c89 -Wall -pipe lex.yy.c -static -o yy045
+</code></pre>
+Example<p>Yahoo! serves chunked pages<p><pre><code>   printf 'GET / HTTP/1.1\r\nHost: us.yahoo.com\r\nConnection: close\r\n\r\n'|openssl s_client -connect us.yahoo.com:443 -ign_eof|./yy045</code></pre></p>
+]]></description><pubDate>Tue, 08 Jun 2021 11:18:08 +0000</pubDate><link>https://news.ycombinator.com/item?id=27433595</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27433595</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27433595</guid></item><item><title><![CDATA[New comment by textmode in "Making HTTP clients for use with netcat-like programs, part 2 of 2"]]></title><description><![CDATA[
+<p>Corrections:<p>/int main/{s/input();//;s/return 0/exit(0)/;};/int yywrap/s/return 0/exit(0)/;/%option/s/$/ noinput/</p>
+]]></description><pubDate>Sun, 30 May 2021 23:39:18 +0000</pubDate><link>https://news.ycombinator.com/item?id=27338117</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27338117</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27338117</guid></item><item><title><![CDATA[New comment by textmode in "Binary to hex faster than xxd, part 2 of 2"]]></title><description><![CDATA[
+<p><p><pre><code>    static void flush(void) {                                                                                                                 
+      if (writeall(1, buf, buflen) == -1) _exit(errno);                                                                                     
+      buflen = 0;                                                                                                                           
+      }                                                                                                                                         
+    static void wrch(const char ch) {                                                                                                         
+      if (buflen >= sizeof buf) flush();                                                                                                    
+      buf[buflen++] = ch;                                                                                                                   
+      return;                                                                                                                               
+     }                                                                                                                                         
+    char inbuf[128];
+    int main(int argc, char **argv) {
+        long long r, i;
+        for (;;) {
+            r = read(0, inbuf, sizeof inbuf);
+            if (r == -1) _exit(errno);
+            if (r == 0) break;
+            for (i = 0; i < r; ++i) {
+                wrch("0123456789abcdef"[15 & (inbuf[i] >> 4)]);
+                wrch("0123456789abcdef"[15 & inbuf[i]]);
+            }
+        }
+        wrch('\n');
+        return 0;
+    }</code></pre></p>
+]]></description><pubDate>Fri, 21 May 2021 18:24:16 +0000</pubDate><link>https://news.ycombinator.com/item?id=27237910</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27237910</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27237910</guid></item><item><title><![CDATA[New comment by textmode in "Binary to hex faster than xxd, part 1 of 2"]]></title><description><![CDATA[
+<p><p><pre><code>    #include <unistd.h>
+    #include <errno.h>
+    #include <sys/types.h>
+    int writeall(int fd,const void *xv,long long xlen)
+    {
+      const unsigned char *x = xv;
+      long long w;
+      while (xlen > 0) {
+        w = xlen;
+        if (w > 1048576) w = 1048576;
+        w = write(fd,x,w);
+        x += w;
+        xlen -= w;
+      }
+      return 0;
+    }
+    static int hexdigit(char x)
+    {
+      if (x >= '0' && x <= '9') return x - '0';
+      if (x >= 'a' && x <= 'f') return 10 + (x - 'a');
+      if (x >= 'A' && x <= 'F') return 10 + (x - 'A');
+      return -1;
+    }
+    int hexparse(unsigned char *y,long long len,const char *x)
+    {
+      if (!x) return 0;
+      while (len > 0) {
+        int digit0;
+        int digit1;
+        digit0 = hexdigit(x[0]); if (digit0 == -1) return 0;
+        digit1 = hexdigit(x[1]); if (digit1 == -1) return 0;
+        *y++ = digit1 + 16 * digit0;
+        --len;
+        x += 2;
+      }
+      if (x[0]) return 0;
+      return 1;
+    }</code></pre></p>
+]]></description><pubDate>Fri, 21 May 2021 18:20:11 +0000</pubDate><link>https://news.ycombinator.com/item?id=27237854</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27237854</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27237854</guid></item><item><title><![CDATA[New comment by textmode in "Binary to hex faster than xxd, part 1 of 2"]]></title><description><![CDATA[
+<p>writeall() comes from <a href="http://nacl.cace-project.eu" rel="nofollow">http://nacl.cace-project.eu</a> and there it is used in a networking program.  I removed poll() but only see a very small speed increase so far.<p>fsync() can be removed too but I'm not seeing any resulting speed increase.<p>Alas, input is not always a file so mmap() is not an option.</p>
+]]></description><pubDate>Thu, 20 May 2021 11:11:02 +0000</pubDate><link>https://news.ycombinator.com/item?id=27219672</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=27219672</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=27219672</guid></item><item><title><![CDATA[New comment by textmode in "Chrome is deploying HTTP/3 and IETF QUIC"]]></title><description><![CDATA[
+<p>Glad others are starting to articulate this issue.  HTTP/3 is derived from HTTP/2.  Google's main argument for HTTP/2's existence, its selling point to users, is head-of-line blocking in HTTP/1.1 pipelining.  They also complain about the size of repeated HTTP headers.<p>But no modern browsers actually use HTTP/1.1 pipelining. Interestingly, HTTP/1.1 pipelining works great for non-browser use.  Most web servers enable it by default.  After all, it works.  For example requesting a series of pages from multi-page website, all under a single TCP connection. I have been using HTTP/1.1 pipeplining this way for decades.  It is fast and reliable and enables the web to be used as a non-interactive, information retrieval source.  <i>It is also 100% ad-free.</i>  The user only gets what she requests, nothing more.<p>As for HTTP headers, privacy-conscious or minimalist users might not send many headers, only the minimum to retrieve the page.  That's usually up to three extra lines of text per page for the request headers.  (I rarely ever have to send a User-Agent header for HTTP/1.1 pipelining.)<p><pre><code>   GET /index.html HTTP/1.1
+   Host: example.com
+   Connection: keep-alive
+</code></pre>
+Obviously, the web advertising/tracking industry, including companies like Google that serve this sector, use headers for <i>their own purposes</i>.  Online advertising services.  That's when presumably they could get big.  However, as a user, I have no pressing need for the ability to send/receive larger headers.<p>Websites (IPs represented by domain names) to which users intentionally connect, i.e., the recognisable names that they type and click on, generally don't serve ads.  The ads come from other domains, often other servers.  Users generally do not intentionally try to connect to ad or tracking servers.  HTTP/[01].x's automatic loading of resources, Javascript and other techniques may be used to make those requests, conveniently under the radar and outside the user's awareness.<p>Still, under HTTP/1.1, ads, nor Javascript files that trigger requests for ads, generally cannnot be delivered without the user's computer making a request first. Users can and do manage to exercise some control over their computers and they can prevent these non-interactive requests from being sent, from inside and outside the browser.<p>With HTTP/2 and HTTP/3, the necessity of a user-generated request disappears.  As soon as the user "connects" (UDP) to the website's server, the server could for example send a Javascript file to the user's browser which can in turn trigger requests to other domains for ads or the purpose of tracking, all without any preceding request for the ad/tracking-related Javascript file.  This is another feature of HTTP/[23] called "server push", but interestingly it is not the feature being used to sell HTTP/[23] to users (i.e., pipelining).<p>So, how does a user stop unwanted ads being "pushed" upon her in the stream (irrespective of the application, e.g., browser)?  I generally don't use a "modern" browser, nor Javascript nor graphics.  I like my pipelining outside the browser and free of advertising-related cruft.<p>It's worth considering that the motivation for speeding up websites via HTTP/[23] is solely for the purpose of speeding the delivery of more ads, more "stealthily", to users.  This is a classic case of someone trying to sell you on a "solution" to a problem they themselves have created (or to which they are contributing).<p>Like an ISP trying to upsell customers to faster internet in order that websites bogged down with ads will "load" faster.  When the ISP itself injects ads into pages of websites that are weighed down by ads.</p>
+]]></description><pubDate>Wed, 07 Oct 2020 23:43:26 +0000</pubDate><link>https://news.ycombinator.com/item?id=24714131</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=24714131</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=24714131</guid></item><item><title><![CDATA[New comment by textmode in "HTTP/1.1 pipelining example: DNS-Over-HTTPS"]]></title><description><![CDATA[
+<p>Better 3.sh<p><pre><code>   # 3.sh
+   #!/bin/sh
+   while IFS= read -r x;do sed -n '/\./p;/\./q'|xxd -p |drill -i /dev/stdin 2>/dev/null;done</code></pre></p>
+]]></description><pubDate>Fri, 22 May 2020 01:10:02 +0000</pubDate><link>https://news.ycombinator.com/item?id=23267677</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=23267677</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=23267677</guid></item><item><title><![CDATA[New comment by textmode in "HTTP/1.1 pipelining example: DNS-Over-HTTPS"]]></title><description><![CDATA[
+<p>Correction:<p>- x=tinydns/root/data;cat 1.zone >> $x/data;cd $x;<p>+ x=tinydns/root;cat 1.zone >> $x/data;cd $x;</p>
+]]></description><pubDate>Wed, 20 May 2020 10:54:18 +0000</pubDate><link>https://news.ycombinator.com/item?id=23245395</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=23245395</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=23245395</guid></item><item><title><![CDATA[New comment by textmode in "A safer and more private browsing experience with Secure DNS"]]></title><description><![CDATA[
+<p>"Instead of fetching a specific site, you fetch blocks of sites."<p>I have been doing this for many years, putting bulk DNS data in HOSTS and personal use zone files served from loopback addresses.  It is easier than ever today with so many sources of bulk DNS data.<p>DOH now lets users retrieve DNS data from recursive DNS servers (caches) in bulk, using HTTP/1.1 pipelining.  Here is a working example: <a href="https://news.ycombinator.com/item?id=23242389" rel="nofollow">https://news.ycombinator.com/item?id=23242389</a><p>Many years ago, I started doing non-recursive (no caches used) bulk DNS data retrieval for speed and also for resiliency in the event of outages.  However the privacy gains are obvious.  A rough analogy is downloading all of Wikipedia in bulk and browsing articles offline as opposed to making separate requests online for each article and generating all the requisite DNS and TCP/HTTP traffic.  Openmoko's Wikireader experimented with the idea of offline Wikipedia.<p>Not only does the DOH provider get a record of all the user's DNS lookups, she can now associate each request with the particular user program/device that made it.</p>
+]]></description><pubDate>Wed, 20 May 2020 01:49:30 +0000</pubDate><link>https://news.ycombinator.com/item?id=23242473</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=23242473</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=23242473</guid></item><item><title><![CDATA[New comment by textmode in "Stop Infinite Scrolling"]]></title><description><![CDATA[
+<p><p><pre><code>   Corrections:
+   /tcs/s//openssl s_client -ign_eof -connect/;s/.com/&:443/
+   s/1|2/titles|urls/
+   s/;;1/;;titles/
+   s/;;2/;;urls/</code></pre></p>
+]]></description><pubDate>Wed, 11 Sep 2019 20:43:16 +0000</pubDate><link>https://news.ycombinator.com/item?id=20944462</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=20944462</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=20944462</guid></item><item><title><![CDATA[New comment by textmode in "Stop Infinite Scrolling"]]></title><description><![CDATA[
+<p>One of the websites where one can find this annnoying "infinite scroll" is YouTube channels.<p>I wrote a quick and dirty script to address this annoyance.<p>It can be used to output a table of all the video urls and video titles for any YouTube channel.<p>"yy032" and "yy025" are some utilities I wrote to decode html and transform urls to HTTP for HTTP/1.1 pipelining, respectively.1  Instead of using yy025 and openssl, one could alternatively make a separate TCP connection for each HTTP request, e.g., using something like curl.  Personally, I prefer not to make lots of connections when retrieving mutiple pages from the same domain.<p>Here is a hypothetical example of how to use the script, "1.sh", to make a table of all the video urls and video titles in a channel.<p><pre><code>   echo https://www.youtube.com/user/example/videos|sh 1.sh|yy025|openssl s_client -connect www.youtube.com:443 > 2.html
+   sh 1.sh urls < 2.html > example.1
+   sh 1.sh titles < 2.html > example.2
+   rm 2.html
+   paste -d '\t' example.1 example.2
+
+   # 1.sh
+   case $1 in
+   "")
+   exec 2>/dev/null
+   export Connection=close
+   yy025|tcs www.youtube.com |sed 's/%25/%/g'|yy032 > 1.html
+   while true;do
+   x=$(sed 's/%25/%/g;s/\\//g' 1.html|yy032|grep -o "[^\"]*browse_ajax[^\"\\]*"|sed 's/u0026amp;/\&/g;s/&direct_render=1//;s,^,https://www.youtube.com,');
+   echo > 1.html;
+   test ${#x} -gt 100||break
+   echo "$x" 
+   echo "$x"|yy025|openssl s_client -connect www.youtube.com:443 -ign_eof > 1.html
+   done;
+   rm 1.html;
+   ;;-h|-?|-help|--help) echo usage: echo https://www.youtube.com/user/example/videos \|$0 ;echo usage: $0 "[1|2]" \< 2.htm
+   ;;1) sed 's/\\//g;s/u0026amp;//g;s/u0026quot;//g;s/u0026#39;//g'|grep -o "ltr\" title=\"[^\"]*"|sed 's/ltr..title=.//'  
+   ;;2) sed 's/\\//g;s/u0026amp;//g;s/u0026quot;//g'|grep -o "[^\"]*watch?v=[^\"]*"|sed 's,^,https://www.youtube.com,'|uniq
+   esac
+</code></pre>
+1 <a href="https://news.ycombinator.com/item?id=17689165" rel="nofollow">https://news.ycombinator.com/item?id=17689165</a>
+<a href="https://news.ycombinator.com/item?id=17689152" rel="nofollow">https://news.ycombinator.com/item?id=17689152</a></p>
+]]></description><pubDate>Wed, 11 Sep 2019 10:15:56 +0000</pubDate><link>https://news.ycombinator.com/item?id=20938309</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=20938309</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=20938309</guid></item><item><title><![CDATA[New comment by textmode in "The IA Client – The Swiss Army Knife of Internet Archive"]]></title><description><![CDATA[
+<p>You are probably thinking of pipelining in terms of the popular web browsers.  Those programs want to do pipelining so they can load up resources (read: today, ads) <i>from a variety of domains</i> in order to present a web page with graphics and advertising.<p>That never really worked.  Thus, we have HTTP/2, authored by an ad sales company.  It is very important for an ad sales company that web pages contain not only what the user is requesting but also heaps of automatically followed pointers to third party resources hosted on other domains.  That is, pages need to be able to contain advertising.  HTTP/1.1 pipelining is of little benefit to the ad ecosystem.<p>However, sometimes the user is not trying to load up a graphical web page full of third party resources.  Here, the HN commenter is just trying to get some HTML, extract some URLs and then download some files. The HTML is all obtained <i>from the same domain</i>.  This is text retrieval, nothing more.<p>If all the resources the user wants are <i>from the same domain</i>, e.g., archive.org, then pipelining works great.  I have been using HTTP/1.1 pipelining to do this for several decades and it has always worked flawlessly.<p>Typically httpd settings for any website would allow at least 100 pipelined requests per connection.  As you might imagine, often the httpd settings are just unchanged defaults.  Today the limits I see are often much higher, e.g., several hundred.<p>It is very rare in my experience to find a site that has pipelining disabled.  More likely they are disabling Connection: keep-alive and forcing all requests to be Connection: close.  I rarely see this.<p>The HTTP/1.1 specification suggests a max connection limit per browser of two.  There is no suggested limit on the number of requests per connection.  In terms of efficiency, the more the better.  How many connections does a popular we browser make when loading an "average" web page today?  It is a lot more than two!  In any event, pipelining as I have shown here stays under the two connection limit.</p>
+]]></description><pubDate>Fri, 07 Jun 2019 23:14:47 +0000</pubDate><link>https://news.ycombinator.com/item?id=20129464</link><dc:creator>textmode</dc:creator><comments>https://news.ycombinator.com/item?id=20129464</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=20129464</guid></item></channel></rss>

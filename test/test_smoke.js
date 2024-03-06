@@ -14,7 +14,6 @@ suite('Smoke', function() {
     test('almost-empty.xml mbox', function() {
 	let r = execSync(`${cli} q@example.com <${datadir}/almost-empty.xml|grep -v '^Path:'`)
 	assert.equal(r.toString(), `From rss@example.com Thu Jan 01 00:00:00 1970
-Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 From: rss@example.com
 Subject: no title
@@ -23,6 +22,7 @@ Date: Thu, 01 Jan 1970 00:00:00 +0000
 To: q@example.com
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 
 Permalink: undefined\n`)
     })

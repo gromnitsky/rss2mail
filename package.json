@@ -1,6 +1,6 @@
 {
     "name": "rss2mail",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Convert an rss/atom feed to a bunch of emails in mbox/rnews compatible output; it does NOT send the emails",
     "type": "module",
     "bin": "rss2mail.js",
@@ -23,7 +23,7 @@
     "license": "MIT",
     "dependencies": {
         "grepfeed": "~2.0.0",
-        "lockfile": "~1.0.4",
+        "proper-lockfile": "~4.1.2",
         "nodemailer": "~6.9.4"
     }
 }

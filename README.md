@@ -12,7 +12,7 @@ output.
 
 ## Setup
 
-Nodejs 18.x
+Nodejs 20.x
 
     $ npm i -g rss2mail
 
