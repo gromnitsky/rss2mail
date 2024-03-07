@@ -35,7 +35,7 @@ let out = process.stdout
 let lock = Promise.resolve( () => {/* nop */})
 if (args.values.o) {
     out = fs.createWriteStream(args.values.o, {flags: 'a'})
-    lock = lockfile.lock(args.values.o, {retries: 10})
+    lock = lockfile.lock(args.values.o, {retries: {retries: 10, randomize: true}})
 }
 streams.push(out)
 

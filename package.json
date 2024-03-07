@@ -1,6 +1,6 @@
 {
     "name": "rss2mail",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Convert an rss/atom feed to a bunch of emails in mbox/rnews compatible output; it does NOT send the emails",
     "type": "module",
     "bin": "rss2mail.js",
