@@ -9,8 +9,8 @@ import FeedParser from 'feedparser'
 import lockfile from 'proper-lockfile'
 import MailStream from './index.js'
 
-let errx = function(e) {
-    console.error('rss2mail error:', e.message)
+function errx(e) {
+    console.error(`rss2mail error (${process.env.RSS2MAIL || process.pid}):`, e.message)
     process.exit(1)
 }
 let __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -35,7 +35,12 @@ let out = process.stdout
 let lock = Promise.resolve( () => {/* nop */})
 if (args.values.o) {
     out = fs.createWriteStream(args.values.o, {flags: 'a'})
-    lock = lockfile.lock(args.values.o, {retries: {retries: 10, randomize: true}})
+    lock = lockfile.lock(args.values.o, {
+        retries: { // living dangerously
+            retries: 0, forever: true, minTimeout: 10, maxTimeout: 100,
+            randomize: true
+        }
+    })
 }
 streams.push(out)
 
