@@ -1,10 +1,10 @@
-webpath := http://127.0.0.1/~alex/lib/software/alex/rss2mail/test/lockfile
+out := _out
 
-all: clean rss.ini
-	gmakerss j=$(or $(j),8)
+all: clean $(patsubst %.xml, %.lol, $(wildcard *.xml))
 
-%.ini: %.erb
-	erb webpath=$(webpath) $< > $@
+%.lol: %.xml
+	@mkdir -p $(out)
+	cat $< | ../../rss2mail.js --history $(out)/history.txt -o $(out)/1.mbox
 
 clean:
 	cat .gitignore | xargs rm -rf
