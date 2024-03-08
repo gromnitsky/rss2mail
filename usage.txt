@@ -4,6 +4,7 @@ Usage: rss2mail.js [opt] [bob@example.com ...] < xml
   -f EMAIL        set From header;
   --history FILE  save each new Message-ID in FILE,
                   don't output an email if its message-id was found in FILE;
-  --rnews         print in the rnews format, instead of mbox.
+  --rnews         print in the rnews format, instead of mbox;
+  --no-lock       don't lock the file in `-o` option during writes.
 
 More help: https://github.com/gromnitsky/rss2mail
