@@ -1,9 +1,7 @@
-# rss2mail
+Convert an RSS/Atom feed into a collection of emails in mbox or rnews
+formats.
 
-Convert an rss/atom feed to a bunch of emails in mbox/rnews compatible
-output.
-
-* does NOT send the emails
+* does NOT send emails
 * sendmail ready
 * auto deduces output to text/plain or text/html
 * sanitized html
