@@ -1,6 +1,6 @@
 {
     "name": "rss2mail",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "description": "Convert an RSS/Atom feed into a collection of emails in mbox or rnews formats",
     "type": "module",
     "bin": {
@@ -28,7 +28,6 @@
     "license": "MIT",
     "dependencies": {
         "grepfeed": "~3.0.0",
-        "proper-lockfile": "~4.1.2",
-        "nodemailer": "~6.9.4"
+        "nodemailer": "~7.0.10"
     }
 }

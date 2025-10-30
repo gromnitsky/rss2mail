@@ -6,11 +6,10 @@ formats.
 * auto deduces output to text/plain or text/html
 * sanitized html
 * no configs, settings, templates, &c
-* smol
 
 ## Setup
 
-Nodejs 20.x
+Nodejs 22.x
 
     $ npm i -g rss2mail
 
@@ -47,6 +46,10 @@ To post to some `rss.test` newsgroup:
 [gmakerss](https://github.com/gromnitsky/gmakerss)
 
 ## News
+
+* 2.0.0 breaking changes:
+
+    * remove `--no-lock` CLO.
 
 * 1.0.0 breaking changes:
 

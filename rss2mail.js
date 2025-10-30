@@ -3,52 +3,38 @@
 import {pipeline} from 'stream'
 import util from 'util'
 import fs from 'fs'
-import path from 'path'
 import FeedParser from 'feedparser'
-import lockfile from 'proper-lockfile'
 import MailStream from './index.js'
+import meta from './package.json' with { type: 'json' }
 
 function errx(e) {
-    console.error(`rss2mail error (${process.env.RSS2MAIL || process.pid}):`, e.message)
+    console.error(meta.name, 'error:', e.message)
     process.exit(1)
 }
-let __dirname = path.dirname(new URL('', import.meta.url).pathname)
 
-let args
-try {
+let args; try {
     args = util.parseArgs({allowPositionals: true, options: {
         rnews: { type: 'boolean' }, help: { type: 'boolean', short: 'h' },
         history: { type: 'string' }, f: { type: 'string' },
-        o: { type: 'string' }, 'no-lock': { type: 'boolean' }
+        o: { type: 'string' }, V: { type: 'boolean' }
     }})
 } catch (err) {
     errx(err)
 }
 if (args.values.help) {
-    process.stdout.write(fs.readFileSync(__dirname + '/usage.txt').toString())
+    console.log(fs.readFileSync(import.meta.dirname + '/usage.txt').toString().trim())
     process.exit(0)
 }
+if (args.values.V) { console.log(meta.version); process.exit(0) }
 
 let streams = [process.stdin, new FeedParser(), new MailStream(args)]
 let out = process.stdout
-let lock = Promise.resolve( () => {/* nop */})
 if (args.values.o) {
     out = fs.createWriteStream(args.values.o, {flags: 'a'})
     out.on('error', errx)
-    if (!args.values['no-lock']) {
-        lock = lockfile.lock(args.values.o, {
-            retries: { // living dangerously
-                retries: 0, forever: true, minTimeout: 10, maxTimeout: 100,
-                randomize: true
-            }
-        })
-    }
 }
 streams.push(out)
 
-lock.then( unlock => {
-    pipeline(...streams, err => {
-        if (err && err.code !== 'EPIPE') errx(err)
-        unlock()
-    })
-}).catch(errx)
+pipeline(...streams, err => {
+    if (err && err.code !== 'EPIPE') errx(err)
+})

@@ -16,18 +16,20 @@ export default class MailStream extends Transform {
 	this._writableState.objectMode = true // we can eat objects
 	this.article_count = 0
         this.trans = opts.values.rnews ? this.rnews : this.mbox
-        this.history = opts.values.history ? new History(opts.values.history) : null
+        this.history = new History(opts.values.history)
     }
     async _transform(input, encoding, done) {
 	++this.article_count
 	this._meta = this._meta || feed.metadata(input.meta)
 	let m = new Mail(feed.article(input, undefined, this._meta), this.opts)
-        if (this.history) {
-            if (await this.history.add(m.msgid()))
-                this.push(await this.trans(m))
-        } else {
-            this.push(await this.trans(m))
+
+        let is_new; try {
+            is_new = await this.history.add(m.msgid())
+        } catch (err) {
+            return done(err)    // for pipeline()
         }
+
+        if (is_new) this.push(await this.trans(m))
         done()
     }
     async rnews(mail) {
@@ -98,16 +100,15 @@ class Mail {
 class History {
     constructor(filename) {
         this.filename = filename
-        this.fda = fs.open(filename, "a")
     }
     async add(msgid) {
-        let fda = await this.fda
-        if (!await this.exists(msgid)) {
-            fda.writeFile(msgid + "\n")
+        if ( !this.filename) return true
+        if ( !await this.#exists(msgid)) {
+            await fs.appendFile(this.filename, msgid + "\n")
             return true
         }
     }
-    async exists(msgid) {
+    async #exists(msgid) {
         let fd = await fs.open(this.filename, "a+")
         let found = false
         for await (const line of fd.readLines()) {
@@ -116,7 +117,7 @@ class History {
                 break
             }
         }
-        await fd.close()
+        await fd.close()        // FIXME: use 'using'
         return found
     }
 }
